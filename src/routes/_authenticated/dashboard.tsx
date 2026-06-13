@@ -119,12 +119,12 @@ function Dashboard() {
     <div className="mx-auto max-w-6xl space-y-8 animate-fade-in">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-4xl font-bold tracking-tight text-gradient">Dashboard</h1>
+          <p className="mt-1 text-muted-foreground">
             Welcome back, {user?.email?.split("@")[0]}.
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="lg" className="shadow-lg shadow-primary/20">
           <Link to="/tasks">
             Go to tasks <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
@@ -136,7 +136,7 @@ function Dashboard() {
         {stats.map((s, i) => (
           <Card
             key={s.label}
-            className="relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 animate-fade-in"
+            className="glass relative overflow-hidden border-white/30 transition-all hover:shadow-xl hover:-translate-y-1 animate-fade-in"
             style={{ animationDelay: `${i * 60}ms` }}
           >
             <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${s.accent}`} />
@@ -154,7 +154,7 @@ function Dashboard() {
       </div>
 
       {/* Progress card */}
-      <Card>
+      <Card className="glass border-white/30">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -182,7 +182,7 @@ function Dashboard() {
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
+        <Card className="glass border-white/30">
           <CardHeader>
             <CardTitle>Status breakdown</CardTitle>
             <CardDescription>Completed vs pending tasks</CardDescription>
@@ -230,7 +230,7 @@ function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glass border-white/30">
           <CardHeader>
             <CardTitle>Tasks by priority</CardTitle>
             <CardDescription>How urgent your workload is</CardDescription>
@@ -261,7 +261,7 @@ function Dashboard() {
       </div>
 
       {/* Recent activity */}
-      <Card>
+      <Card className="glass border-white/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5 text-primary" /> Recent activity
