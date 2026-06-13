@@ -30,6 +30,7 @@ const priorityStyles: Record<string, string> = {
 
 function TasksPage() {
   const { user } = useAuth();
+  useTasksRealtime(user?.id);
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [priority, setPriority] = useState<string>("all");
