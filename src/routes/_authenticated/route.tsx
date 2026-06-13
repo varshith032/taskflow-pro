@@ -29,9 +29,15 @@ function AuthedLayout() {
       <div className="flex min-h-screen w-full">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
-          <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur">
-            <SidebarTrigger />
-            <Button variant="ghost" size="icon" onClick={toggle} aria-label="Toggle theme">
+          <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-white/20 px-4 md:px-6 glass">
+            <SidebarTrigger className="hover:bg-accent/60" />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggle}
+              aria-label="Toggle theme"
+              className="rounded-full hover:bg-accent/60"
+            >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
           </header>
