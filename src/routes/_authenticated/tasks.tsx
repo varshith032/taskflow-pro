@@ -9,9 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Pencil, Trash2, Search, CalendarDays } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, CalendarDays, ClipboardList } from "lucide-react";
 import { TaskDialog, type TaskRow } from "@/components/task-dialog";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/empty-state";
+import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 
 export const Route = createFileRoute("/_authenticated/tasks")({
   head: () => ({ meta: [{ title: "Tasks — TaskFlow Pro" }] }),
@@ -32,6 +35,7 @@ function TasksPage() {
   const [status, setStatus] = useState<string>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<TaskRow | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<TaskRow | null>(null);
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["tasks", user?.id],
@@ -60,8 +64,12 @@ function TasksPage() {
         .update({ status: newStatus, completed_at: newStatus === "completed" ? new Date().toISOString() : null })
         .eq("id", t.id);
       if (error) throw error;
+      return newStatus;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
+    onSuccess: (newStatus) => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+      if (newStatus === "completed") toast.success("Nice work — task completed! 🎉");
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -113,17 +121,42 @@ function TasksPage() {
       </Card>
 
       {isLoading ? (
-        <p className="text-center text-sm text-muted-foreground">Loading…</p>
+        <div className="grid gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full" />
+          ))}
+        </div>
       ) : filtered.length === 0 ? (
-        <Card><CardContent className="py-16 text-center">
-          <p className="text-muted-foreground">No tasks match your filters.</p>
-        </CardContent></Card>
+        <Card>
+          <CardContent className="p-0">
+            <EmptyState
+              icon={ClipboardList}
+              title={tasks.length === 0 ? "No tasks yet" : "No tasks match your filters"}
+              description={
+                tasks.length === 0
+                  ? "Create your first task to start organizing your day."
+                  : "Try adjusting your search or filters."
+              }
+              action={
+                tasks.length === 0 ? (
+                  <Button onClick={() => { setEditing(null); setDialogOpen(true); }}>
+                    <Plus className="mr-1 h-4 w-4" /> New task
+                  </Button>
+                ) : null
+              }
+            />
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid gap-3">
-          {filtered.map((t) => {
+          {filtered.map((t, i) => {
             const overdue = t.due_date && t.status !== "completed" && new Date(t.due_date) < new Date(new Date().setHours(0,0,0,0));
             return (
-              <Card key={t.id} className="transition-all hover:shadow-md">
+              <Card
+                key={t.id}
+                className="transition-all hover:shadow-md hover:-translate-y-0.5 animate-fade-in"
+                style={{ animationDelay: `${i * 30}ms` }}
+              >
                 <CardContent className="flex items-start gap-3 p-4">
                   <Checkbox
                     checked={t.status === "completed"}
@@ -147,7 +180,12 @@ function TasksPage() {
                     <Button variant="ghost" size="icon" onClick={() => { setEditing(t); setDialogOpen(true); }}>
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(t.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setPendingDelete(t)}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -159,6 +197,16 @@ function TasksPage() {
       )}
 
       <TaskDialog open={dialogOpen} onOpenChange={setDialogOpen} task={editing} />
+      <ConfirmDeleteDialog
+        open={!!pendingDelete}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        title={`Delete "${pendingDelete?.title ?? ""}"?`}
+        description="This task will be permanently removed. This action cannot be undone."
+        onConfirm={() => {
+          if (pendingDelete) deleteMutation.mutate(pendingDelete.id);
+          setPendingDelete(null);
+        }}
+      />
     </div>
   );
 }
