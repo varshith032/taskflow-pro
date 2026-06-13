@@ -119,12 +119,12 @@ function Dashboard() {
     <div className="mx-auto max-w-6xl space-y-8 animate-fade-in">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-4xl font-bold tracking-tight text-gradient">Dashboard</h1>
+          <p className="mt-1 text-muted-foreground">
             Welcome back, {user?.email?.split("@")[0]}.
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="lg" className="shadow-lg shadow-primary/20">
           <Link to="/tasks">
             Go to tasks <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
