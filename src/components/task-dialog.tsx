@@ -17,6 +17,8 @@ export type TaskRow = {
   priority: "low" | "medium" | "high";
   status: "pending" | "completed";
   due_date: string | null;
+  created_at: string;
+  completed_at: string | null;
 };
 
 interface Props {
