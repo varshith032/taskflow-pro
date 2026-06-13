@@ -40,6 +40,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { user } = useAuth();
+  useTasksRealtime(user?.id);
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["tasks", user?.id],
     enabled: !!user,
