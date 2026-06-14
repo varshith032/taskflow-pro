@@ -68,6 +68,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Modern task management — stay organized and ship more." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "TaskFlow Pro" },
+      { name: "twitter:description", content: "Modern task management — stay organized and ship more." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ee814882-354c-42bc-bdcf-1aabcf4b2576/id-preview-a7c77564--5ea02b3f-f758-4475-aff3-91d2179b14ac.lovable.app-1781411554613.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ee814882-354c-42bc-bdcf-1aabcf4b2576/id-preview-a7c77564--5ea02b3f-f758-4475-aff3-91d2179b14ac.lovable.app-1781411554613.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
